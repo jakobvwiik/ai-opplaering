@@ -531,12 +531,15 @@ function showStep(i){
   if(s.spot){const el=document.querySelector(s.spot);if(el){const r=el.getBoundingClientRect();sl.style.top=(r.top-5)+'px';sl.style.left=(r.left-5)+'px';sl.style.width=(r.width+10)+'px';sl.style.height=(r.height+10)+'px';sl.classList.add('on')}}else{sl.classList.remove('on')}
   clearPP();if(s.pp)document.getElementById('pp'+s.pp).classList.add('on');
   // On mobile, scroll to AI panel when messages appear
-  if(isMob()&&s.msgs.length>0){setTimeout(()=>{document.getElementById('ai-panel').scrollIntoView({behavior:'smooth',block:'start'})},300)}
-  if(s.msgs.length>0){s.msgs.forEach((msg,j)=>{setTimeout(()=>{if(msg.t==='ai'){const typ=document.createElement('div');typ.className='typing';typ.id='typ';typ.innerHTML='<span></span><span></span><span></span>';chat.appendChild(typ);chat.scrollTop=chat.scrollHeight;setTimeout(()=>{const t=document.getElementById('typ');if(t)t.remove();addB(msg.t,msg.m)},1200)}else{addB(msg.t,msg.m)}},j*400)})}
+  if(isMob()&&s.msgs.length>0){setTimeout(()=>{document.getElementById('ai-panel').scrollIntoView({behavior:'smooth',block:'start'})},200)}
+  if(s.msgs.length>0){s.msgs.forEach((msg,j)=>{setTimeout(()=>{if(msg.t==='ai'){const typ=document.createElement('div');typ.className='typing';typ.id='typ';typ.innerHTML='<span></span><span></span><span></span>';chat.appendChild(typ);chat.scrollTop=chat.scrollHeight;if(isMob())typ.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>{const t=document.getElementById('typ');if(t)t.remove();addB(msg.t,msg.m)},1200)}else{addB(msg.t,msg.m)}},j*(msg.t==='ai'?400:200))})}
 }
 function addB(t,m){
   if(t==='ai'){const lbl=document.createElement('div');lbl.className='ai-label';lbl.textContent='AI-assistent';chat.appendChild(lbl);requestAnimationFrame(()=>requestAnimationFrame(()=>lbl.classList.add('vis')))}
-  const b=document.createElement('div');b.className=`bubble ${t}`;b.textContent=m;chat.appendChild(b);requestAnimationFrame(()=>requestAnimationFrame(()=>{b.classList.add('vis');chat.scrollTop=chat.scrollHeight;if(isMob()){setTimeout(()=>b.scrollIntoView({behavior:'smooth',block:'center'}),100)}}))}
+  const b=document.createElement('div');b.className=`bubble ${t}`;b.textContent=m;chat.appendChild(b);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{b.classList.add('vis');chat.scrollTop=chat.scrollHeight;
+    if(isMob()){setTimeout(()=>b.scrollIntoView({behavior:'smooth',block:'nearest'}),150)}
+  }))}
 function nextStep(){if(cur<steps.length-1){showStep(cur+1)}else{showOutroSummary()}}
 
 function showOutroSummary(){
