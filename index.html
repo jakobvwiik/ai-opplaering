@@ -85,8 +85,9 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
 .bubble.system{background:var(--pn-yellow);color:var(--pn-ink);align-self:flex-start;border-bottom-left-radius:3px;font-weight:600;font-size:11px}
 .ai-label{font-size:9px;font-weight:700;color:var(--pn-blue-deep);align-self:flex-start;margin-bottom:-4px;padding-left:4px;letter-spacing:.02em;opacity:0;transform:translateY(6px);transition:opacity .4s,transform .4s}
 .ai-label.vis{opacity:1;transform:translateY(0)}
-.typing{display:flex;gap:3px;padding:10px 13px;align-self:flex-start}
-.typing span{width:6px;height:6px;border-radius:50%;background:var(--pn-blue);opacity:.3;animation:pulse 1.4s infinite}
+.typing{display:flex;gap:4px;padding:10px 13px;align-self:flex-start;align-items:center;background:#fff;border-radius:12px;border-bottom-left-radius:3px;border:1px solid var(--pn-grey-light);box-shadow:0 2px 6px rgba(0,89,130,.04)}
+.typing::before{content:'AI-assistenten skriver';font-size:10px;color:var(--pn-blue-deep);font-weight:600;margin-right:4px}
+.typing span{width:5px;height:5px;border-radius:50%;background:var(--pn-blue);opacity:.3;animation:pulse 1.4s infinite}
 .typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
 @keyframes pulse{0%,80%,100%{opacity:.3;transform:scale(1)}40%{opacity:1;transform:scale(1.15)}}
 
@@ -104,25 +105,55 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
 .spotlight.on{opacity:1}
 
 .step-bar{position:fixed;top:58px;left:50%;transform:translateX(-50%) translateY(-16px);z-index:600;width:min(720px,92vw);
-  background:#fff;color:var(--pn-ink);border-radius:14px;padding:16px 20px 14px;
-  border:2px solid var(--pn-coral);box-shadow:0 10px 36px rgba(26,35,48,.2),0 0 0 3px rgba(242,107,94,.1);
+  background:linear-gradient(135deg,#1A2330 0%,#005982 100%);color:#fff;border-radius:14px;padding:16px 20px 14px;
+  border:none;box-shadow:0 10px 36px rgba(26,35,48,.25);
   opacity:0;pointer-events:none;transition:opacity .4s,transform .4s}
 .step-bar.vis{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
 .step-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
 .step-meta{display:flex;align-items:center;gap:10px}
 .step-section{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--pn-coral)}
-.step-counter{font-size:11px;font-weight:500;color:var(--pn-grey)}
-.step-text{font-size:15px;font-weight:400;line-height:1.5;color:var(--pn-ink)}
-.step-tip{margin-top:8px;padding:8px 12px;background:var(--pn-blue-pale);border-radius:8px;font-size:12px;color:var(--pn-blue-deep);line-height:1.5;display:none}
+.step-counter{font-size:11px;font-weight:500;color:rgba(255,255,255,.6)}
+.step-text{font-size:15px;font-weight:400;line-height:1.5;color:rgba(255,255,255,.92)}
+.step-tip{margin-top:8px;padding:8px 12px;background:rgba(255,255,255,.1);border-radius:8px;font-size:12px;color:var(--pn-yellow);line-height:1.5;display:none;border:1px solid rgba(255,255,255,.08)}
 .step-tip.vis{display:block}
-.step-dots{display:flex;gap:4px;margin-top:10px;justify-content:center;flex-wrap:wrap}
-.step-dots .dot{width:8px;height:8px;border-radius:50%;background:var(--pn-grey-light);transition:background .3s,transform .3s}
-.step-dots .dot.done{background:var(--pn-blue)}
-.step-dots .dot.active{background:var(--pn-coral);transform:scale(1.3)}
+.step-dots{display:none}
+.step-progress{margin-top:10px;height:4px;background:rgba(255,255,255,.12);border-radius:2px;overflow:hidden}
+.step-progress-fill{height:100%;background:var(--pn-coral);border-radius:2px;transition:width .5s ease}
 .step-nav{display:flex;gap:6px;flex-shrink:0}
 .step-nav button{padding:7px 16px;border-radius:8px;border:none;font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;transition:background .2s}
 .btn-next{background:var(--pn-coral);color:#fff}.btn-next:hover{background:#e05a4d}
-.btn-prev{background:var(--pn-grey-light);color:var(--pn-ink)}.btn-prev:hover{background:#d5d8dc}
+.btn-prev{background:rgba(255,255,255,.15);color:#fff}.btn-prev:hover{background:rgba(255,255,255,.25)}
+
+/* Confetti */
+@keyframes confetti-fall{0%{transform:translateY(-100vh) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.confetti-piece{position:fixed;width:8px;height:14px;top:-20px;z-index:3001;animation:confetti-fall linear forwards;border-radius:2px}
+
+/* Dark mode */
+@media(prefers-color-scheme:dark){
+  :root{--pn-cream:#1a1f26;--pn-ink:#e8eaed;--pn-grey:#9ca3af;--pn-grey-light:#2d333b;--pn-blue-pale:#0d2a3a}
+  body{background:#1a1f26}
+  .crm{background:#1a1f26}
+  .chat{background:#1a1f26}
+  .field-val.msg{background:#0d1117;color:rgba(255,255,255,.9)}
+  .field-val.timeline{background:#22272e;box-shadow:none}
+  .bubble.ai{background:#22272e;color:#e8eaed;border-color:#2d333b;box-shadow:none}
+  .bubble.user{background:var(--pn-blue)}
+  .bubble.system{background:#3d2e00;color:#ffc845}
+  .ai{background:#22272e}
+  .ai-header{background:#0d2a3a;border-color:#2d333b}
+  .pp-bar{background:#22272e;border-color:#2d333b}
+  .pp{background:#22272e;border-color:#2d333b;color:#9ca3af}
+  .chat-input-area{background:#22272e;border-color:#2d333b}
+  .chat-input{background:#1a1f26;border-color:#2d333b;color:#e8eaed}
+  .dept-card{background:#22272e;border-color:#2d333b;color:#e8eaed}
+  .dept-card:hover{border-color:var(--pn-coral)}
+  .dept-chip{background:#0d2a3a;color:#7ec8e3}
+  .typing{background:#22272e;border-color:#2d333b}
+  .typing::before{color:#7ec8e3}
+  #intro{background:linear-gradient(180deg,#1a1f26 0%,#0d2a3a 100%)}
+  .tl-entry{border-color:#2d333b}
+  .attach-item{background:#22272e;border-color:#2d333b}
+}
 
 /* ═══════════ MOBILE ═══════════ */
 .mob-tabs{display:none}
@@ -155,19 +186,21 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
   .chat-icon-wrap{display:none}
   .back-btn{font-size:11px;padding:5px 10px;margin-left:auto}
 
-  /* Step bar — sticky below topbar */
-  .step-bar{position:sticky;top:44px;z-index:99;left:auto;right:auto;width:100%;transform:none!important;border-radius:0;padding:10px 12px;border:none;border-bottom:2px solid var(--pn-coral);box-shadow:0 2px 8px rgba(0,0,0,.08);opacity:0;pointer-events:none;flex-shrink:0;background:#fff}
+  /* Step bar — sticky below topbar, dark style */
+  .step-bar{position:sticky;top:44px;z-index:99;left:auto;right:auto;width:100%;transform:none!important;border-radius:0;padding:10px 12px;border:none;border-bottom:none;box-shadow:0 2px 12px rgba(0,0,0,.15);opacity:0;pointer-events:none;flex-shrink:0;background:linear-gradient(135deg,#1A2330 0%,#005982 100%)}
   .step-bar.vis{opacity:1;pointer-events:auto}
   .step-top{flex-direction:row;gap:6px;align-items:center;margin-bottom:0}
   .step-meta{flex:1;min-width:0}
-  .step-section{font-size:9px}
-  .step-counter{font-size:9px}
+  .step-section{font-size:9px;color:var(--pn-coral)}
+  .step-counter{font-size:9px;color:rgba(255,255,255,.5)}
   .step-nav{flex-shrink:0}
   .step-nav button{padding:8px 14px;font-size:12px}
-  .step-text{font-size:12px;line-height:1.5;margin-top:6px}
-  .step-tip{font-size:10px;margin-top:6px;padding:6px 10px}
+  .step-text{font-size:12px;line-height:1.5;margin-top:6px;color:rgba(255,255,255,.9)}
+  .step-tip{font-size:10px;margin-top:6px;padding:6px 10px;color:var(--pn-yellow);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.06)}
   .step-dots{display:none}
-  .step-expand{display:none}
+  .step-progress{margin-top:6px;height:3px}
+  .typing{font-size:10px}
+  .typing::before{font-size:9px}
 
   /* Content — single column, scrollable */
   .content-split{flex-direction:column;flex:none;overflow:visible}
@@ -273,7 +306,7 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
       <div class="step-nav"><button class="btn-prev" onclick="prevStep()">←</button><button class="btn-next" id="next-btn" onclick="nextStep()">Neste →</button></div></div>
     <div class="step-text" id="step-text"></div>
     <div class="step-tip" id="step-tip"></div>
-    <div class="step-dots" id="step-dots"></div>
+    <div class="step-progress"><div class="step-progress-fill" id="step-progress-fill"></div></div>
   </div>
   <div class="content-split">
     <div class="crm" id="crm-panel"></div>
@@ -474,8 +507,8 @@ function startTrack(id){
 }
 function goHome(){location.reload()}
 const isMob=()=>window.innerWidth<=768;
-function buildDots(){const c=document.getElementById('step-dots');c.innerHTML='';steps.forEach(()=>{const d=document.createElement('span');d.className='dot';c.appendChild(d)})}
-function updateDots(){document.querySelectorAll('#step-dots .dot').forEach((d,i)=>{d.className='dot';if(i<cur)d.classList.add('done');if(i===cur)d.classList.add('active')})}
+function buildDots(){}
+function updateDots(){document.getElementById('step-progress-fill').style.width=`${((cur+1)/steps.length)*100}%`}
 function updateSpotlight(){
   if(!steps[cur])return;const s=steps[cur],sl=document.getElementById('spotlight');
   if(s.spot){const el=document.querySelector(s.spot);if(el){const r=el.getBoundingClientRect();sl.style.top=(r.top-5)+'px';sl.style.left=(r.left-5)+'px';sl.style.width=(r.width+10)+'px';sl.style.height=(r.height+10)+'px'}}
@@ -503,7 +536,7 @@ function showStep(i){
 }
 function addB(t,m){
   if(t==='ai'){const lbl=document.createElement('div');lbl.className='ai-label';lbl.textContent='AI-assistent';chat.appendChild(lbl);requestAnimationFrame(()=>requestAnimationFrame(()=>lbl.classList.add('vis')))}
-  const b=document.createElement('div');b.className=`bubble ${t}`;b.textContent=m;chat.appendChild(b);requestAnimationFrame(()=>requestAnimationFrame(()=>b.classList.add('vis')));chat.scrollTop=chat.scrollHeight}
+  const b=document.createElement('div');b.className=`bubble ${t}`;b.textContent=m;chat.appendChild(b);requestAnimationFrame(()=>requestAnimationFrame(()=>{b.classList.add('vis');chat.scrollTop=chat.scrollHeight;if(isMob()){setTimeout(()=>b.scrollIntoView({behavior:'smooth',block:'center'}),100)}}))}
 function nextStep(){if(cur<steps.length-1){showStep(cur+1)}else{showOutroSummary()}}
 
 function showOutroSummary(){
@@ -568,6 +601,7 @@ function showCelebration(){
   const dept=names[trackId];
   const dato=new Date().toLocaleDateString('no-NO');
   removeScreen('outro-screen');const o=mkScreen();
+  setTimeout(()=>launchConfetti(),400);
   o.innerHTML=`<div style="max-width:520px;text-align:center;animation:fadeUp .7s ease both">
     <div style="font-size:80px;margin-bottom:16px">🏅</div>
     <h2 style="font-size:clamp(26px,4vw,44px);font-weight:700;margin-bottom:12px;line-height:1.15">Gratulerer!</h2>
@@ -610,6 +644,34 @@ function mkScreen(){const o=document.createElement('div');o.id='outro-screen';o.
 function removeScreen(id){const el=document.getElementById(id);if(el)el.remove()}
 function prevStep(){if(cur>0){chat.innerHTML='';for(let i=0;i<cur-1;i++){steps[i].msgs.forEach(msg=>{if(msg.t==='ai'){const lbl=document.createElement('div');lbl.className='ai-label vis';lbl.textContent='AI-assistent';chat.appendChild(lbl)}const b=document.createElement('div');b.className=`bubble ${msg.t} vis`;b.textContent=msg.m;chat.appendChild(b)})};showStep(cur-1)}}
 document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();nextStep()}if(e.key==='ArrowLeft'){e.preventDefault();prevStep()}});
+
+// Swipe navigation
+let touchStartX=0,touchStartY=0;
+document.addEventListener('touchstart',e=>{touchStartX=e.changedTouches[0].screenX;touchStartY=e.changedTouches[0].screenY},{passive:true});
+document.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].screenX-touchStartX;
+  const dy=e.changedTouches[0].screenY-touchStartY;
+  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5){
+    if(!document.getElementById('step-bar').classList.contains('vis'))return;
+    if(dx<0)nextStep();else prevStep();
+  }
+},{passive:true});
+
+// Confetti
+function launchConfetti(){
+  const colors=['#F26B5E','#00A4D5','#FFC845','#3A7D44','#005982'];
+  for(let i=0;i<50;i++){
+    const c=document.createElement('div');c.className='confetti-piece';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDuration=(2+Math.random()*3)+'s';
+    c.style.animationDelay=(Math.random()*1.5)+'s';
+    c.style.width=(5+Math.random()*8)+'px';
+    c.style.height=(8+Math.random()*12)+'px';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),6000);
+  }
+}
 </script>
 </body>
 </html>
