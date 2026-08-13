@@ -145,20 +145,18 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
   .pp-bar{gap:3px;padding:6px 10px;flex-wrap:wrap}
   .pp{width:26px;height:26px;font-size:11px}
   .pp .tip{display:none}
-  .step-bar{top:auto;bottom:0;left:0;right:0;width:100%;transform:none;border-radius:14px 14px 0 0;padding:10px 14px 16px;max-height:70vh;overflow-y:auto}
-  .step-bar.vis{transform:none}
-  .step-bar .step-text{max-height:0;overflow:hidden;opacity:0;transition:max-height .3s,opacity .3s,margin .3s;margin:0}
-  .step-bar .step-tip{max-height:0;overflow:hidden;opacity:0;padding:0;margin:0;transition:max-height .3s,opacity .3s,padding .3s}
-  .step-bar.expanded .step-text{max-height:300px;opacity:1;margin-bottom:4px}
-  .step-bar.expanded .step-tip.vis{max-height:300px;opacity:1;padding:8px 12px;margin-top:8px}
-  .step-bar .step-dots{display:none}
-  .step-expand{display:flex;align-items:center;justify-content:center;gap:4px;font-size:11px;color:var(--pn-grey);cursor:pointer;padding:4px 0;margin-bottom:4px;-webkit-tap-highlight-color:transparent}
-  .step-expand::after{content:'▼';font-size:8px;transition:transform .3s}
-  .step-bar.expanded .step-expand::after{transform:rotate(180deg)}
+  .step-bar{position:relative;top:auto;bottom:auto;left:auto;right:auto;width:100%;transform:none;border-radius:0;padding:10px 14px 10px;border:none;border-bottom:2px solid var(--pn-coral);box-shadow:none;opacity:0;pointer-events:none;order:-1;flex-shrink:0;max-height:none;overflow:visible}
+  .step-bar.vis{opacity:1;pointer-events:auto;transform:none}
   .step-top{flex-direction:row;gap:8px;align-items:center}
   .step-meta{flex:1;min-width:0}
   .step-nav{flex-shrink:0}
-  .step-nav button{flex:none;padding:10px 16px;font-size:13px}
+  .step-nav button{flex:none;padding:8px 14px;font-size:13px}
+  .step-text{font-size:13px;margin-top:6px}
+  .step-tip{font-size:11px}
+  .step-section{font-size:10px}
+  .step-counter{font-size:10px}
+  .step-dots{display:none}
+  .step-expand{display:none}
   .spotlight{display:none!important}
   .crm-meta{flex-direction:column;gap:4px}
   .field-val.msg{font-size:11px;padding:12px}
@@ -227,6 +225,14 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
       <button class="back-btn" onclick="goHome()">← Velg avdeling</button></div>
   </div>
   <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
+  <div class="step-bar" id="step-bar">
+    <div class="step-expand" id="step-expand" onclick="toggleStepBar()">Les instruksjon</div>
+    <div class="step-top"><div class="step-meta"><div class="step-counter" id="step-counter"></div><div class="step-section" id="step-section"></div></div>
+      <div class="step-nav"><button class="btn-prev" onclick="prevStep()">←</button><button class="btn-next" id="next-btn" onclick="nextStep()">Neste →</button></div></div>
+    <div class="step-text" id="step-text"></div>
+    <div class="step-tip" id="step-tip"></div>
+    <div class="step-dots" id="step-dots"></div>
+  </div>
   <div class="content-split">
     <div class="crm" id="crm-panel"></div>
     <div class="ai" id="ai-panel">
@@ -249,14 +255,6 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
 </div>
 
 <div class="spotlight" id="spotlight"></div>
-<div class="step-bar" id="step-bar">
-  <div class="step-expand" id="step-expand" onclick="toggleStepBar()">Les instruksjon</div>
-  <div class="step-top"><div class="step-meta"><div class="step-counter" id="step-counter"></div><div class="step-section" id="step-section"></div></div>
-    <div class="step-nav"><button class="btn-prev" onclick="prevStep()">←</button><button class="btn-next" id="next-btn" onclick="nextStep()">Neste →</button></div></div>
-  <div class="step-text" id="step-text"></div>
-  <div class="step-tip" id="step-tip"></div>
-  <div class="step-dots" id="step-dots"></div>
-</div>
 
 <script>
 let cur=0,steps=[],trackId='';
