@@ -119,7 +119,6 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
 .step-dots .dot{width:8px;height:8px;border-radius:50%;background:var(--pn-grey-light);transition:background .3s,transform .3s}
 .step-dots .dot.done{background:var(--pn-blue)}
 .step-dots .dot.active{background:var(--pn-coral);transform:scale(1.3)}
-.step-expand{display:none}
 .step-nav{display:flex;gap:6px;flex-shrink:0}
 .step-nav button{padding:7px 16px;border-radius:8px;border:none;font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;transition:background .2s}
 .btn-next{background:var(--pn-coral);color:#fff}.btn-next:hover{background:#e05a4d}
@@ -143,16 +142,21 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
   .dept-start{padding:10px 28px;font-size:13px;background:var(--pn-good);color:#fff}
   .intro-foot{margin-top:16px;font-size:11px}
 
+  /* Body scrollable */
+  body{overflow:auto;height:auto}
+  #app{height:auto;min-height:100vh}
+  #app.active{display:flex}
+
   /* Topbar */
-  .topbar{padding:8px 12px;gap:6px}
+  .topbar{padding:8px 12px;gap:6px;position:sticky;top:0;z-index:100}
   .topbar .logo span{display:none}
   .topbar-search{display:none}
   .topbar-right span{display:none}
   .chat-icon-wrap{display:none}
   .back-btn{font-size:11px;padding:5px 10px;margin-left:auto}
 
-  /* Step bar — inline, compact */
-  .step-bar{position:relative;top:auto;bottom:auto;left:auto;right:auto;width:100%;transform:none!important;border-radius:0;padding:10px 12px;border:none;border-bottom:2px solid var(--pn-coral);box-shadow:none;opacity:0;pointer-events:none;flex-shrink:0;max-height:none;overflow:visible;z-index:auto}
+  /* Step bar — sticky below topbar */
+  .step-bar{position:sticky;top:44px;z-index:99;left:auto;right:auto;width:100%;transform:none!important;border-radius:0;padding:10px 12px;border:none;border-bottom:2px solid var(--pn-coral);box-shadow:0 2px 8px rgba(0,0,0,.08);opacity:0;pointer-events:none;flex-shrink:0;background:#fff}
   .step-bar.vis{opacity:1;pointer-events:auto}
   .step-top{flex-direction:row;gap:6px;align-items:center;margin-bottom:0}
   .step-meta{flex:1;min-width:0}
@@ -165,15 +169,12 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
   .step-dots{display:none}
   .step-expand{display:none}
 
-  /* Content — tabbed on mobile */
-  .content-split{flex-direction:column;flex:1;overflow:hidden}
-  .mob-tabs{display:flex;flex-shrink:0;background:#fff;border-bottom:1px solid var(--pn-grey-light)}
-  .mob-tab{flex:1;padding:8px;text-align:center;font-size:12px;font-weight:700;color:var(--pn-grey);cursor:pointer;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
-  .mob-tab.active{color:var(--pn-blue-deep);border-bottom-color:var(--pn-blue)}
+  /* Content — single column, scrollable */
+  .content-split{flex-direction:column;flex:none;overflow:visible}
+  .mob-tabs{display:none}
 
   /* CRM */
-  .crm{flex:1;overflow-y:auto;padding:10px 12px;display:none}
-  .crm.mob-active{display:block}
+  .crm{flex:none;overflow:visible;padding:10px 12px}
   .crm-header{margin-bottom:6px}
   .crm-icon{width:24px;height:24px;font-size:10px}
   .crm-title{font-size:14px}
@@ -188,10 +189,9 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
   .attach-item{width:56px;height:40px;font-size:7px}
 
   /* AI panel */
-  .ai{width:100%;flex:1;border-left:none;border-top:none;display:none;flex-direction:column}
-  .ai.mob-active{display:flex}
+  .ai{width:100%;flex:none;border-left:none;border-top:1px solid var(--pn-grey-light)}
   .ai-header{padding:8px 12px;font-size:12px}
-  .chat{padding:8px;gap:6px}
+  .chat{overflow:visible;padding:8px;gap:6px;min-height:60px}
   .bubble{font-size:10.5px;line-height:1.55;max-width:98%;padding:8px 10px}
   .bubble.ai{padding-left:28px}
   .bubble.ai::before{width:14px;height:14px;font-size:8px;left:6px;top:6px}
@@ -269,7 +269,6 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
   </div>
   <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
   <div class="step-bar" id="step-bar">
-    <div class="step-expand" id="step-expand" onclick="toggleStepBar()">Les instruksjon</div>
     <div class="step-top"><div class="step-meta"><div class="step-counter" id="step-counter"></div><div class="step-section" id="step-section"></div></div>
       <div class="step-nav"><button class="btn-prev" onclick="prevStep()">←</button><button class="btn-next" id="next-btn" onclick="nextStep()">Neste →</button></div></div>
     <div class="step-text" id="step-text"></div>
@@ -277,11 +276,7 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
     <div class="step-dots" id="step-dots"></div>
   </div>
   <div class="content-split">
-    <div class="mob-tabs" id="mob-tabs">
-      <div class="mob-tab active" id="mob-tab-crm" onclick="switchMobTab('crm')">📄 Saken</div>
-      <div class="mob-tab" id="mob-tab-ai" onclick="switchMobTab('ai')">💬 AI-chat</div>
-    </div>
-    <div class="crm mob-active" id="crm-panel"></div>
+    <div class="crm" id="crm-panel"></div>
     <div class="ai" id="ai-panel">
       <div class="ai-header"><span class="dot"></span> AI-assistent</div>
       <div class="chat" id="chat"></div>
@@ -474,19 +469,11 @@ function startTrack(id){
   crmPanel.innerHTML=CRM[id];chat.innerHTML='';
   document.getElementById('intro').classList.add('hidden');
   document.getElementById('app').classList.add('active');
-  if(isMob()){switchMobTab('crm')}
   buildDots();
   setTimeout(()=>{document.getElementById('step-bar').classList.add('vis');showStep(0)},500);
 }
 function goHome(){location.reload()}
-function toggleStepBar(){document.getElementById('step-bar').classList.toggle('expanded')}
 const isMob=()=>window.innerWidth<=768;
-function switchMobTab(tab){
-  const crm=document.getElementById('crm-panel'),ai=document.getElementById('ai-panel');
-  const tCrm=document.getElementById('mob-tab-crm'),tAi=document.getElementById('mob-tab-ai');
-  if(tab==='crm'){crm.classList.add('mob-active');ai.classList.remove('mob-active');tCrm.classList.add('active');tAi.classList.remove('active')}
-  else{ai.classList.add('mob-active');crm.classList.remove('mob-active');tAi.classList.add('active');tCrm.classList.remove('active')}
-}
 function buildDots(){const c=document.getElementById('step-dots');c.innerHTML='';steps.forEach(()=>{const d=document.createElement('span');d.className='dot';c.appendChild(d)})}
 function updateDots(){document.querySelectorAll('#step-dots .dot').forEach((d,i)=>{d.className='dot';if(i<cur)d.classList.add('done');if(i===cur)d.classList.add('active')})}
 function updateSpotlight(){
@@ -510,11 +497,8 @@ function showStep(i){
   const sl=document.getElementById('spotlight');
   if(s.spot){const el=document.querySelector(s.spot);if(el){const r=el.getBoundingClientRect();sl.style.top=(r.top-5)+'px';sl.style.left=(r.left-5)+'px';sl.style.width=(r.width+10)+'px';sl.style.height=(r.height+10)+'px';sl.classList.add('on')}}else{sl.classList.remove('on')}
   clearPP();if(s.pp)document.getElementById('pp'+s.pp).classList.add('on');
-  // Auto-switch mobile tabs
-  if(isMob()){
-    if(s.msgs.length>0||s.spot==='#ai-panel'||s.spot==='#pp-bar'){switchMobTab('ai')}
-    else if(s.spot==='#crm-panel'){switchMobTab('crm')}
-  }
+  // On mobile, scroll to AI panel when messages appear
+  if(isMob()&&s.msgs.length>0){setTimeout(()=>{document.getElementById('ai-panel').scrollIntoView({behavior:'smooth',block:'start'})},300)}
   if(s.msgs.length>0){s.msgs.forEach((msg,j)=>{setTimeout(()=>{if(msg.t==='ai'){const typ=document.createElement('div');typ.className='typing';typ.id='typ';typ.innerHTML='<span></span><span></span><span></span>';chat.appendChild(typ);chat.scrollTop=chat.scrollHeight;setTimeout(()=>{const t=document.getElementById('typ');if(t)t.remove();addB(msg.t,msg.m)},1200)}else{addB(msg.t,msg.m)}},j*400)})}
 }
 function addB(t,m){
