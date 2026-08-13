@@ -103,6 +103,7 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
 
 .spotlight{position:fixed;z-index:500;border:2px solid var(--pn-coral);border-radius:14px;box-shadow:0 0 0 4000px rgba(26,35,48,.3),0 0 20px rgba(242,107,94,.15);pointer-events:none;transition:all .6s cubic-bezier(.4,0,.2,1);opacity:0}
 .spotlight.on{opacity:1}
+.step-overlay{display:none}
 
 .step-bar{position:fixed;top:58px;left:50%;transform:translateX(-50%) translateY(-16px);z-index:600;width:min(720px,92vw);
   background:linear-gradient(135deg,#1A2330 0%,#005982 100%);color:#fff;border-radius:14px;padding:16px 20px 14px;
@@ -186,19 +187,21 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
   .chat-icon-wrap{display:none}
   .back-btn{font-size:11px;padding:5px 10px;margin-left:auto}
 
-  /* Step bar — sticky below topbar, dark style */
-  .step-bar{position:sticky;top:44px;z-index:99;left:auto;right:auto;width:100%;transform:none!important;border-radius:0;padding:10px 12px;border:none;border-bottom:none;box-shadow:0 2px 12px rgba(0,0,0,.15);opacity:0;pointer-events:none;flex-shrink:0;background:linear-gradient(135deg,#1A2330 0%,#005982 100%)}
-  .step-bar.vis{opacity:1;pointer-events:auto}
-  .step-top{flex-direction:row;gap:6px;align-items:center;margin-bottom:0}
+  /* Step bar — popup modal on mobile */
+  .step-bar{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.95)!important;z-index:2000;width:calc(100vw - 32px);max-width:400px;border-radius:16px;padding:20px 18px 16px;border:none;box-shadow:0 16px 48px rgba(0,0,0,.3);opacity:0;pointer-events:none;background:linear-gradient(135deg,#1A2330 0%,#005982 100%);transition:opacity .3s,transform .3s}
+  .step-bar.vis{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)!important}
+  .step-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:1999}
+  .step-overlay.vis{display:block}
+  .step-top{flex-direction:row;gap:6px;align-items:center;margin-bottom:8px}
   .step-meta{flex:1;min-width:0}
-  .step-section{font-size:9px;color:var(--pn-coral)}
-  .step-counter{font-size:9px;color:rgba(255,255,255,.5)}
+  .step-section{font-size:10px;color:var(--pn-coral)}
+  .step-counter{font-size:10px;color:rgba(255,255,255,.5)}
   .step-nav{flex-shrink:0}
-  .step-nav button{padding:8px 14px;font-size:12px}
-  .step-text{font-size:12px;line-height:1.5;margin-top:6px;color:rgba(255,255,255,.9)}
-  .step-tip{font-size:10px;margin-top:6px;padding:6px 10px;color:var(--pn-yellow);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.06)}
+  .step-nav button{padding:10px 18px;font-size:13px}
+  .step-text{font-size:14px;line-height:1.6;margin-top:4px;color:rgba(255,255,255,.92)}
+  .step-tip{font-size:11px;margin-top:8px;padding:8px 12px;color:var(--pn-yellow);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.06)}
   .step-dots{display:none}
-  .step-progress{margin-top:6px;height:3px}
+  .step-progress{margin-top:12px;height:3px}
   .typing{font-size:10px}
   .typing::before{font-size:9px}
 
@@ -330,6 +333,7 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
 </div>
 
 <div class="spotlight" id="spotlight"></div>
+<div class="step-overlay" id="step-overlay"></div>
 
 <script>
 let cur=0,steps=[],trackId='';
@@ -518,7 +522,6 @@ window.addEventListener('resize',updateSpotlight);
 
 function showStep(i){
   cur=i;const s=steps[i];
-  document.getElementById('step-bar').classList.remove('expanded');
   document.getElementById('step-counter').textContent=`Steg ${i+1} av ${steps.length}`;
   document.getElementById('step-section').textContent=s.sec;
   document.getElementById('step-text').textContent=s.txt;
@@ -530,20 +533,25 @@ function showStep(i){
   const sl=document.getElementById('spotlight');
   if(s.spot){const el=document.querySelector(s.spot);if(el){const r=el.getBoundingClientRect();sl.style.top=(r.top-5)+'px';sl.style.left=(r.left-5)+'px';sl.style.width=(r.width+10)+'px';sl.style.height=(r.height+10)+'px';sl.classList.add('on')}}else{sl.classList.remove('on')}
   clearPP();if(s.pp)document.getElementById('pp'+s.pp).classList.add('on');
-  // On mobile, scroll to AI panel when messages appear
-  if(isMob()&&s.msgs.length>0){setTimeout(()=>{document.getElementById('ai-panel').scrollIntoView({behavior:'smooth',block:'start'})},200)}
-  if(s.msgs.length>0){s.msgs.forEach((msg,j)=>{setTimeout(()=>{if(msg.t==='ai'){const typ=document.createElement('div');typ.className='typing';typ.id='typ';typ.innerHTML='<span></span><span></span><span></span>';chat.appendChild(typ);chat.scrollTop=chat.scrollHeight;if(isMob())typ.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>{const t=document.getElementById('typ');if(t)t.remove();addB(msg.t,msg.m)},1200)}else{addB(msg.t,msg.m)}},j*(msg.t==='ai'?400:200))})}
+  // Show overlay on mobile
+  if(isMob()){document.getElementById('step-overlay').classList.add('vis')}
+  // Render messages then scroll to bottom
+  if(s.msgs.length>0){s.msgs.forEach((msg,j)=>{setTimeout(()=>{if(msg.t==='ai'){const typ=document.createElement('div');typ.className='typing';typ.id='typ';typ.innerHTML='<span></span><span></span><span></span>';chat.appendChild(typ);chat.scrollTop=chat.scrollHeight;setTimeout(()=>{const t=document.getElementById('typ');if(t)t.remove();addB(msg.t,msg.m)},1200)}else{addB(msg.t,msg.m)}},j*(msg.t==='ai'?400:200))})}
 }
 function addB(t,m){
   if(t==='ai'){const lbl=document.createElement('div');lbl.className='ai-label';lbl.textContent='AI-assistent';chat.appendChild(lbl);requestAnimationFrame(()=>requestAnimationFrame(()=>lbl.classList.add('vis')))}
   const b=document.createElement('div');b.className=`bubble ${t}`;b.textContent=m;chat.appendChild(b);
   requestAnimationFrame(()=>requestAnimationFrame(()=>{b.classList.add('vis');chat.scrollTop=chat.scrollHeight;
-    if(isMob()){setTimeout(()=>b.scrollIntoView({behavior:'smooth',block:'nearest'}),150)}
+    if(isMob()){setTimeout(()=>window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}),100)}
   }))}
-function nextStep(){if(cur<steps.length-1){showStep(cur+1)}else{showOutroSummary()}}
+function nextStep(){
+  if(isMob())document.getElementById('step-overlay').classList.remove('vis');
+  if(cur<steps.length-1){showStep(cur+1)}else{showOutroSummary()}
+}
 
 function showOutroSummary(){
   document.getElementById('spotlight').classList.remove('on');clearPP();document.getElementById('step-bar').classList.remove('vis');
+  if(isMob())document.getElementById('step-overlay').classList.remove('vis');
   const names={cs:'Kundeservice',claims:'Claims'};
   const chips={cs:['🔍 Oppsummer','💬 Svarforslag','✏️ Omformuler','📋 Behandling','📷 Bilder','🌐 Oversettelse','🔧 Feilsøking'],claims:['🔍 Oppsummer','💬 Svarforslag','📋 Behandling','📷 Bilder','⚖️ Reklamasjon','📄 Fil','📝 Fritekst']};
   removeScreen('outro-screen');
@@ -645,7 +653,7 @@ function showFAQ(){
 }
 function mkScreen(){const o=document.createElement('div');o.id='outro-screen';o.style.cssText='position:fixed;inset:0;z-index:3000;background:linear-gradient(180deg,var(--pn-cream),var(--pn-blue-pale));display:flex;align-items:center;justify-content:center;flex-direction:column;padding:24px 16px;overflow-y:auto';return o}
 function removeScreen(id){const el=document.getElementById(id);if(el)el.remove()}
-function prevStep(){if(cur>0){chat.innerHTML='';for(let i=0;i<cur-1;i++){steps[i].msgs.forEach(msg=>{if(msg.t==='ai'){const lbl=document.createElement('div');lbl.className='ai-label vis';lbl.textContent='AI-assistent';chat.appendChild(lbl)}const b=document.createElement('div');b.className=`bubble ${msg.t} vis`;b.textContent=msg.m;chat.appendChild(b)})};showStep(cur-1)}}
+function prevStep(){if(cur>0){if(isMob())document.getElementById('step-overlay').classList.remove('vis');chat.innerHTML='';for(let i=0;i<cur-1;i++){steps[i].msgs.forEach(msg=>{if(msg.t==='ai'){const lbl=document.createElement('div');lbl.className='ai-label vis';lbl.textContent='AI-assistent';chat.appendChild(lbl)}const b=document.createElement('div');b.className=`bubble ${msg.t} vis`;b.textContent=msg.m;chat.appendChild(b)})};showStep(cur-1)}}
 document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();nextStep()}if(e.key==='ArrowLeft'){e.preventDefault();prevStep()}});
 
 // Swipe navigation
