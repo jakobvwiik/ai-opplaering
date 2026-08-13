@@ -14,7 +14,7 @@
   --pn-good:#3A7D44;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);overflow:hidden;height:100vh;width:100vw;-webkit-font-smoothing:antialiased}
+body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);overflow:hidden;height:100vh;width:100vw;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
 
 #intro{position:fixed;inset:0;z-index:3000;background:linear-gradient(180deg,var(--pn-cream) 0%,var(--pn-blue-pale) 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;padding:40px 40px 60px;transition:opacity .7s,transform .7s;overflow-y:auto}
 #intro::before,#intro::after{content:"";position:absolute;border-radius:50%;opacity:.07}
@@ -123,6 +123,41 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
 .step-nav button{padding:7px 16px;border-radius:8px;border:none;font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;transition:background .2s}
 .btn-next{background:var(--pn-coral);color:#fff}.btn-next:hover{background:#e05a4d}
 .btn-prev{background:var(--pn-grey-light);color:var(--pn-ink)}.btn-prev:hover{background:#d5d8dc}
+
+/* ═══════════ MOBILE ═══════════ */
+@media(max-width:768px){
+  #intro{padding:24px 16px 40px}
+  #intro h1{font-size:28px}
+  .intro-sub{font-size:14px;margin-bottom:20px}
+  .dept-card{width:100%;max-width:340px;padding:20px 18px}
+  .dept-grid{gap:14px}
+  .topbar{padding:10px 12px;gap:8px}
+  .topbar .logo span{display:none}
+  .topbar-search{display:none}
+  .topbar-right span:not(:last-child){display:none}
+  .back-btn{font-size:11px;padding:5px 10px;margin-left:6px}
+  .content-split{flex-direction:column}
+  .crm{flex:none;max-height:35vh;min-height:120px;overflow-y:auto;padding:12px 14px}
+  .ai{width:100%;flex:1;border-left:none;border-top:1px solid var(--pn-grey-light)}
+  .chat{padding:10px}
+  .bubble{font-size:11px;max-width:98%}
+  .pp-bar{gap:3px;padding:6px 10px;flex-wrap:wrap}
+  .pp{width:26px;height:26px;font-size:11px}
+  .pp .tip{display:none}
+  .step-bar{top:auto;bottom:0;left:0;right:0;width:100%;transform:none;border-radius:14px 14px 0 0;padding:12px 14px 20px;max-height:55vh;overflow-y:auto}
+  .step-bar.vis{transform:none}
+  .step-top{flex-direction:column;gap:8px;align-items:flex-start}
+  .step-nav{align-self:stretch}
+  .step-nav button{flex:1;padding:10px 12px;font-size:13px}
+  .step-text{font-size:14px}
+  .step-section{font-size:10px}
+  .step-counter{font-size:10px}
+  .step-dots .dot{width:6px;height:6px}
+  .spotlight{display:none!important}
+  .crm-meta{flex-direction:column;gap:4px}
+  .field-val.msg{font-size:11px;padding:12px}
+  .attach-row{flex-wrap:wrap}
+}
 </style>
 </head>
 <body>
@@ -520,7 +555,7 @@ function showFAQ(){
     <div style="text-align:center"><button onclick="location.reload()" style="padding:14px 48px;background:var(--pn-blue);color:#fff;border:none;border-radius:50px;font-size:16px;font-weight:700;cursor:pointer;font-family:var(--sans)">← Forsiden</button></div></div>`;
   document.body.appendChild(o);
 }
-function mkScreen(){const o=document.createElement('div');o.id='outro-screen';o.style.cssText='position:fixed;inset:0;z-index:3000;background:linear-gradient(180deg,var(--pn-cream),var(--pn-blue-pale));display:flex;align-items:center;justify-content:center;flex-direction:column;padding:40px;overflow-y:auto';return o}
+function mkScreen(){const o=document.createElement('div');o.id='outro-screen';o.style.cssText='position:fixed;inset:0;z-index:3000;background:linear-gradient(180deg,var(--pn-cream),var(--pn-blue-pale));display:flex;align-items:center;justify-content:center;flex-direction:column;padding:24px 16px;overflow-y:auto';return o}
 function removeScreen(id){const el=document.getElementById(id);if(el)el.remove()}
 function prevStep(){if(cur>0){chat.innerHTML='';for(let i=0;i<cur-1;i++){steps[i].msgs.forEach(msg=>{if(msg.t==='ai'){const lbl=document.createElement('div');lbl.className='ai-label vis';lbl.textContent='AI-assistent';chat.appendChild(lbl)}const b=document.createElement('div');b.className=`bubble ${msg.t} vis`;b.textContent=msg.m;chat.appendChild(b)})};showStep(cur-1)}}
 document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();nextStep()}if(e.key==='ArrowLeft'){e.preventDefault();prevStep()}});
