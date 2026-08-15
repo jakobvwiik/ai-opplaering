@@ -105,6 +105,40 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
 .spotlight.on{opacity:1}
 .step-overlay{display:none}
 
+/* Orientation screen */
+#orient{display:none;position:fixed;inset:0;z-index:2500;background:linear-gradient(180deg,var(--pn-cream),var(--pn-blue-pale));flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;overflow-y:auto}
+#orient.vis{display:flex}
+.orient-layout{display:flex;gap:2px;width:min(680px,92vw);height:260px;border-radius:12px;overflow:hidden;border:2px solid var(--pn-grey-light);box-shadow:0 8px 32px rgba(0,0,0,.08);margin:20px 0}
+.orient-zone{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;font-weight:700;font-size:13px;text-align:center;padding:12px}
+.orient-zone.crm-zone{flex:1;background:#fff;color:var(--pn-ink)}
+.orient-zone.ai-zone{width:200px;background:var(--pn-blue-pale);color:var(--pn-blue-deep)}
+.orient-zone .oz-icon{font-size:32px}
+.orient-zone .oz-label{font-size:11px;color:var(--pn-grey);font-weight:400;max-width:160px;line-height:1.4}
+.orient-topbar{width:min(680px,92vw);height:36px;background:var(--pn-blue);border-radius:12px 12px 0 0;display:flex;align-items:center;padding:0 12px;gap:8px}
+.orient-topbar span{color:#fff;font-size:10px;font-weight:600}
+.orient-topbar .ot-chat{margin-left:auto;background:rgba(255,255,255,.2);padding:3px 8px;border-radius:6px;font-size:9px;color:#fff;display:flex;align-items:center;gap:3px}
+
+/* Step menu */
+.step-menu-btn{background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:6px;padding:5px 8px;font-size:14px;cursor:pointer;line-height:1}
+#step-menu{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3000;background:#fff;border-radius:16px;padding:20px;width:min(360px,90vw);max-height:70vh;overflow-y:auto;box-shadow:0 16px 48px rgba(0,0,0,.25)}
+#step-menu.vis{display:block}
+#step-menu-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:2999}
+#step-menu-overlay.vis{display:block}
+.sm-title{font-size:14px;font-weight:700;color:var(--pn-ink);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--pn-grey-light)}
+.sm-item{padding:8px 10px;border-radius:8px;font-size:12px;color:var(--pn-ink);cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .15s}
+.sm-item:hover{background:var(--pn-blue-pale)}
+.sm-item.active{background:var(--pn-coral-pale);font-weight:700}
+.sm-item .sm-num{width:22px;height:22px;border-radius:50%;background:var(--pn-grey-light);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--pn-grey);flex-shrink:0}
+.sm-item.active .sm-num{background:var(--pn-coral);color:#fff}
+.sm-item.done .sm-num{background:var(--pn-good);color:#fff}
+
+@media(max-width:768px){
+  .orient-layout{flex-direction:column;height:auto;width:92vw}
+  .orient-zone.ai-zone{width:100%;height:120px}
+  .orient-zone.crm-zone{height:140px}
+  .orient-topbar{width:92vw}
+}
+
 .step-bar{position:fixed;top:58px;left:50%;transform:translateX(-50%) translateY(-16px);z-index:600;width:min(720px,92vw);
   background:linear-gradient(135deg,#1A2330 0%,#005982 100%);color:#fff;border-radius:14px;padding:16px 20px 14px;
   border:none;box-shadow:0 10px 36px rgba(26,35,48,.25);
@@ -204,6 +238,12 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
   .step-progress{margin-top:12px;height:3px}
   .typing{font-size:10px}
   .typing::before{font-size:9px}
+
+  /* Floating next button — visible when popup is dismissed */
+  .mob-next{display:none;position:fixed;bottom:20px;right:16px;z-index:200;padding:12px 24px;background:var(--pn-coral);color:#fff;border:none;border-radius:50px;font-family:var(--sans);font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(242,107,94,.4);animation:fadeUp .3s ease}
+  .mob-next.vis{display:block}
+  .mob-prev{display:none;position:fixed;bottom:20px;left:16px;z-index:200;padding:12px 18px;background:rgba(26,35,48,.85);color:#fff;border:none;border-radius:50px;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+  .mob-prev.vis{display:block}
 
   /* Content — single column, scrollable */
   .content-split{flex-direction:column;flex:none;overflow:visible}
@@ -306,7 +346,7 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
   <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
   <div class="step-bar" id="step-bar">
     <div class="step-top"><div class="step-meta"><div class="step-counter" id="step-counter"></div><div class="step-section" id="step-section"></div></div>
-      <div class="step-nav"><button class="btn-prev" onclick="prevStep()">←</button><button class="btn-next" id="next-btn" onclick="nextStep()">Neste →</button></div></div>
+      <div class="step-nav"><button class="step-menu-btn" onclick="toggleStepMenu()">☰</button><button class="btn-prev" onclick="prevStep()">←</button><button class="btn-next" id="next-btn" onclick="nextStep()">Neste →</button></div></div>
     <div class="step-text" id="step-text"></div>
     <div class="step-tip" id="step-tip"></div>
     <div class="step-progress"><div class="step-progress-fill" id="step-progress-fill"></div></div>
@@ -332,8 +372,27 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
   </div>
 </div>
 
+<div id="orient">
+  <span class="intro-eyebrow" style="animation:fadeUp .6s ease both">Før vi starter</span>
+  <h2 style="font-size:clamp(22px,4vw,36px);font-weight:700;text-align:center;margin-bottom:4px;animation:fadeUp .6s ease .2s both">Slik ser SugarCRM ut</h2>
+  <p style="font-size:14px;color:var(--pn-grey);text-align:center;max-width:44ch;line-height:1.5;animation:fadeUp .6s ease .3s both">Opplæringen simulerer dette grensesnittet. Her er de to hovedområdene:</p>
+  <div style="animation:fadeUp .6s ease .4s both">
+    <div class="orient-topbar"><span>PostNord Norge · SugarCRM</span><div class="ot-chat">💬 BETA</div></div>
+    <div class="orient-layout">
+      <div class="orient-zone crm-zone"><div class="oz-icon">📄</div><div style="font-size:16px">Saken</div><div class="oz-label">Her ser du kundens henvendelse, sakshistorikk og vedlegg.</div></div>
+      <div class="orient-zone ai-zone"><div class="oz-icon">🤖</div><div style="font-size:16px">AI-panelet</div><div class="oz-label">Her chatter du med AI-assistenten og ser svar, analyser og forslag.</div></div>
+    </div>
+  </div>
+  <button onclick="dismissOrient()" style="margin-top:24px;padding:14px 48px;background:var(--pn-coral);color:#fff;border:none;border-radius:50px;font-size:16px;font-weight:700;cursor:pointer;font-family:var(--sans);animation:fadeUp .6s ease .6s both">Forstått — start kurs →</button>
+</div>
+
+<div id="step-menu-overlay" onclick="closeStepMenu()"></div>
+<div id="step-menu"><div class="sm-title">Gå til steg</div><div id="sm-list"></div></div>
+
 <div class="spotlight" id="spotlight"></div>
 <div class="step-overlay" id="step-overlay"></div>
+<button class="mob-next" id="mob-next" onclick="nextStep()">Neste →</button>
+<button class="mob-prev" id="mob-prev" onclick="prevStep()">← Tilbake</button>
 
 <script>
 let cur=0,steps=[],trackId='';
@@ -505,12 +564,40 @@ function startTrack(id){
   trackId=id;steps=TRACKS[id];cur=0;
   crmPanel.innerHTML=CRM[id];chat.innerHTML='';
   document.getElementById('intro').classList.add('hidden');
+  // Show orientation screen first
+  document.getElementById('orient').classList.add('vis');
+}
+function dismissOrient(){
+  document.getElementById('orient').classList.remove('vis');
   document.getElementById('app').classList.add('active');
   buildDots();
-  setTimeout(()=>{document.getElementById('step-bar').classList.add('vis');showStep(0)},500);
+  setTimeout(()=>{document.getElementById('step-bar').classList.add('vis');showStep(0)},400);
 }
 function goHome(){location.reload()}
 const isMob=()=>window.innerWidth<=768;
+
+function toggleStepMenu(){
+  document.getElementById('step-menu').classList.toggle('vis');
+  document.getElementById('step-menu-overlay').classList.toggle('vis');
+  // Build menu items
+  const list=document.getElementById('sm-list');list.innerHTML='';
+  const seen=new Set();
+  steps.forEach((s,i)=>{
+    const sec=s.sec;if(seen.has(sec))return;seen.add(sec);
+    const item=document.createElement('div');
+    item.className='sm-item'+(i<=cur?' done':'')+(i===cur?' active':'');
+    item.innerHTML=`<span class="sm-num">${seen.size}</span>${sec}`;
+    item.onclick=()=>{closeStepMenu();jumpToStep(i)};
+    list.appendChild(item);
+  });
+}
+function closeStepMenu(){document.getElementById('step-menu').classList.remove('vis');document.getElementById('step-menu-overlay').classList.remove('vis')}
+function jumpToStep(i){
+  if(isMob()){document.getElementById('step-overlay').classList.remove('vis');document.getElementById('mob-next').classList.remove('vis');document.getElementById('mob-prev').classList.remove('vis')}
+  chat.innerHTML='';
+  for(let j=0;j<i;j++){steps[j].msgs.forEach(msg=>{if(msg.t==='ai'){const lbl=document.createElement('div');lbl.className='ai-label vis';lbl.textContent='AI-assistent';chat.appendChild(lbl)}const b=document.createElement('div');b.className=`bubble ${msg.t} vis`;b.textContent=msg.m;chat.appendChild(b)})}
+  showStep(i);
+}
 function buildDots(){}
 function updateDots(){document.getElementById('step-progress-fill').style.width=`${((cur+1)/steps.length)*100}%`}
 function updateSpotlight(){
@@ -520,38 +607,77 @@ function updateSpotlight(){
 setTimeout(()=>{document.querySelector('.crm')?.addEventListener('scroll',updateSpotlight);document.querySelector('.chat')?.addEventListener('scroll',updateSpotlight)},1000);
 window.addEventListener('resize',updateSpotlight);
 
+let phase='popup'; // 'popup' or 'content'
+
 function showStep(i){
   cur=i;const s=steps[i];
   document.getElementById('step-counter').textContent=`Steg ${i+1} av ${steps.length}`;
   document.getElementById('step-section').textContent=s.sec;
   document.getElementById('step-text').textContent=s.txt;
   document.getElementById('progress').style.width=`${((i+1)/steps.length)*100}%`;
-  document.getElementById('next-btn').textContent=i===steps.length-1?'✓ Ferdig':'Neste →';
+  document.getElementById('step-progress-fill').style.width=`${((i+1)/steps.length)*100}%`;
   const tipEl=document.getElementById('step-tip');
   if(s.tip){tipEl.textContent=s.tip;tipEl.classList.add('vis')}else{tipEl.classList.remove('vis')}
-  updateDots();
   const sl=document.getElementById('spotlight');
   if(s.spot){const el=document.querySelector(s.spot);if(el){const r=el.getBoundingClientRect();sl.style.top=(r.top-5)+'px';sl.style.left=(r.left-5)+'px';sl.style.width=(r.width+10)+'px';sl.style.height=(r.height+10)+'px';sl.classList.add('on')}}else{sl.classList.remove('on')}
   clearPP();if(s.pp)document.getElementById('pp'+s.pp).classList.add('on');
-  // Show overlay on mobile
-  if(isMob()){document.getElementById('step-overlay').classList.add('vis')}
-  // Render messages then scroll to bottom
+
+  if(isMob()){
+    // Mobile: show popup first, don't render messages yet
+    phase='popup';
+    document.getElementById('step-overlay').classList.add('vis');
+    document.getElementById('step-bar').classList.add('vis');
+    document.getElementById('mob-next').classList.remove('vis');
+    document.getElementById('mob-prev').classList.remove('vis');
+    document.getElementById('next-btn').textContent=s.msgs.length>0?'Vis →':i===steps.length-1?'✓ Ferdig':'Neste →';
+  } else {
+    // Desktop: render everything at once
+    document.getElementById('next-btn').textContent=i===steps.length-1?'✓ Ferdig':'Neste →';
+    renderMessages(s);
+  }
+}
+
+function renderMessages(s){
   if(s.msgs.length>0){s.msgs.forEach((msg,j)=>{setTimeout(()=>{if(msg.t==='ai'){const typ=document.createElement('div');typ.className='typing';typ.id='typ';typ.innerHTML='<span></span><span></span><span></span>';chat.appendChild(typ);chat.scrollTop=chat.scrollHeight;setTimeout(()=>{const t=document.getElementById('typ');if(t)t.remove();addB(msg.t,msg.m)},1200)}else{addB(msg.t,msg.m)}},j*(msg.t==='ai'?400:200))})}
 }
+
 function addB(t,m){
   if(t==='ai'){const lbl=document.createElement('div');lbl.className='ai-label';lbl.textContent='AI-assistent';chat.appendChild(lbl);requestAnimationFrame(()=>requestAnimationFrame(()=>lbl.classList.add('vis')))}
   const b=document.createElement('div');b.className=`bubble ${t}`;b.textContent=m;chat.appendChild(b);
   requestAnimationFrame(()=>requestAnimationFrame(()=>{b.classList.add('vis');chat.scrollTop=chat.scrollHeight;
-    if(isMob()){setTimeout(()=>window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}),100)}
+    if(isMob()){setTimeout(()=>window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}),150)}
   }))}
+
 function nextStep(){
-  if(isMob())document.getElementById('step-overlay').classList.remove('vis');
-  if(cur<steps.length-1){showStep(cur+1)}else{showOutroSummary()}
+  if(isMob()){
+    if(phase==='popup'){
+      // Dismiss popup, show content
+      phase='content';
+      document.getElementById('step-overlay').classList.remove('vis');
+      document.getElementById('step-bar').classList.remove('vis');
+      // Show floating buttons
+      document.getElementById('mob-next').classList.add('vis');
+      document.getElementById('mob-next').textContent=cur===steps.length-1?'✓ Ferdig':'Neste →';
+      if(cur>0)document.getElementById('mob-prev').classList.add('vis');
+      // Now render messages and scroll
+      renderMessages(steps[cur]);
+      if(steps[cur].msgs.length>0){
+        setTimeout(()=>window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}),300);
+      }
+    } else {
+      // Advance to next step (or finish)
+      document.getElementById('mob-next').classList.remove('vis');
+      document.getElementById('mob-prev').classList.remove('vis');
+      if(cur<steps.length-1){showStep(cur+1)}else{showOutroSummary()}
+    }
+  } else {
+    if(cur<steps.length-1){showStep(cur+1)}else{showOutroSummary()}
+  }
 }
 
 function showOutroSummary(){
   document.getElementById('spotlight').classList.remove('on');clearPP();document.getElementById('step-bar').classList.remove('vis');
-  if(isMob())document.getElementById('step-overlay').classList.remove('vis');
+  if(isMob()){document.getElementById('step-overlay').classList.remove('vis');document.getElementById('mob-next').classList.remove('vis');document.getElementById('mob-prev').classList.remove('vis')}
   const names={cs:'Kundeservice',claims:'Claims'};
   const chips={cs:['🔍 Oppsummer','💬 Svarforslag','✏️ Omformuler','📋 Behandling','📷 Bilder','🌐 Oversettelse','🔧 Feilsøking'],claims:['🔍 Oppsummer','💬 Svarforslag','📋 Behandling','📷 Bilder','⚖️ Reklamasjon','📄 Fil','📝 Fritekst']};
   removeScreen('outro-screen');
@@ -653,7 +779,9 @@ function showFAQ(){
 }
 function mkScreen(){const o=document.createElement('div');o.id='outro-screen';o.style.cssText='position:fixed;inset:0;z-index:3000;background:linear-gradient(180deg,var(--pn-cream),var(--pn-blue-pale));display:flex;align-items:center;justify-content:center;flex-direction:column;padding:24px 16px;overflow-y:auto';return o}
 function removeScreen(id){const el=document.getElementById(id);if(el)el.remove()}
-function prevStep(){if(cur>0){if(isMob())document.getElementById('step-overlay').classList.remove('vis');chat.innerHTML='';for(let i=0;i<cur-1;i++){steps[i].msgs.forEach(msg=>{if(msg.t==='ai'){const lbl=document.createElement('div');lbl.className='ai-label vis';lbl.textContent='AI-assistent';chat.appendChild(lbl)}const b=document.createElement('div');b.className=`bubble ${msg.t} vis`;b.textContent=msg.m;chat.appendChild(b)})};showStep(cur-1)}}
+function prevStep(){if(cur>0){
+  if(isMob()){document.getElementById('step-overlay').classList.remove('vis');document.getElementById('mob-next').classList.remove('vis');document.getElementById('mob-prev').classList.remove('vis')}
+  chat.innerHTML='';for(let i=0;i<cur-1;i++){steps[i].msgs.forEach(msg=>{if(msg.t==='ai'){const lbl=document.createElement('div');lbl.className='ai-label vis';lbl.textContent='AI-assistent';chat.appendChild(lbl)}const b=document.createElement('div');b.className=`bubble ${msg.t} vis`;b.textContent=msg.m;chat.appendChild(b)})};showStep(cur-1)}}
 document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();nextStep()}if(e.key==='ArrowLeft'){e.preventDefault();prevStep()}});
 
 // Swipe navigation
