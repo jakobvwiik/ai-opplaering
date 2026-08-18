@@ -100,6 +100,9 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
 .chat-input-area{padding:10px 16px;background:#fff;border-top:1px solid var(--pn-grey-light)}
 .chat-input-label{font-size:9px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--pn-grey);margin-bottom:3px}
 .chat-input{width:100%;padding:8px 10px;border-radius:8px;border:1.5px solid var(--pn-grey-light);font-family:var(--sans);font-size:11px;outline:none;background:var(--pn-cream)}
+.case-summary{display:none}
+.collapsible .coll-header{display:none}
+.collapsible .coll-body{max-height:none}
 
 .spotlight{position:fixed;z-index:500;border:2px solid var(--pn-coral);border-radius:14px;box-shadow:0 0 0 4000px rgba(26,35,48,.3),0 0 20px rgba(242,107,94,.15);pointer-events:none;transition:all .6s cubic-bezier(.4,0,.2,1);opacity:0}
 .spotlight.on{opacity:1}
@@ -249,25 +252,34 @@ body{font-family:var(--sans);background:var(--pn-cream);color:var(--pn-ink);over
   .content-split{flex-direction:column;flex:none;overflow:visible}
   .mob-tabs{display:none}
 
-  /* CRM */
-  .crm{flex:none;overflow:visible;padding:10px 12px}
-  .crm-header{margin-bottom:6px}
-  .crm-icon{width:24px;height:24px;font-size:10px}
-  .crm-title{font-size:14px}
-  .crm-meta{flex-direction:column;gap:2px;font-size:10px;margin-bottom:8px;padding-bottom:6px}
-  .field{margin-bottom:8px}
-  .field-label{font-size:8px}
-  .field-val{font-size:11px}
-  .field-val.msg{font-size:10.5px;padding:10px;line-height:1.6;border-radius:10px}
-  .field-val.timeline{font-size:10px;padding:8px;line-height:1.6}
-  .tl-date{font-size:9px}
-  .attach-row{flex-wrap:wrap;gap:4px}
-  .attach-item{width:56px;height:40px;font-size:7px}
+  /* CRM — compact with collapsible sections */
+  .crm{flex:none;overflow:visible;padding:8px 10px}
+  .crm-header{margin-bottom:4px}
+  .crm-icon{width:22px;height:22px;font-size:9px}
+  .crm-title{font-size:13px}
+  .crm-meta{flex-direction:column;gap:2px;font-size:9px;margin-bottom:6px;padding-bottom:4px}
+  .case-summary{display:block;background:var(--pn-ink);color:#fff;border-radius:10px;padding:10px 12px;margin-bottom:6px}
+  .case-summary .cs-company{font-size:12px;font-weight:700;margin-bottom:2px}
+  .case-summary .cs-desc{font-size:10px;opacity:.8;line-height:1.4}
+  .collapsible{margin-bottom:4px}
+  .coll-header{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--pn-grey-light);border-radius:8px;cursor:pointer;font-size:10px;font-weight:600;color:var(--pn-ink);-webkit-tap-highlight-color:transparent}
+  .coll-header::after{content:'▼';font-size:7px;color:var(--pn-grey);transition:transform .2s}
+  .coll-header.open::after{transform:rotate(180deg)}
+  .coll-body{max-height:0;overflow:hidden;transition:max-height .3s ease}
+  .coll-body.open{max-height:1000px}
+  .field{margin-bottom:4px}
+  .field-label{font-size:7px}
+  .field-val{font-size:10px}
+  .field-val.msg{font-size:10px;padding:8px;line-height:1.5;border-radius:8px}
+  .field-val.timeline{font-size:9px;padding:6px;line-height:1.5}
+  .tl-date{font-size:8px}
+  .attach-row{flex-wrap:wrap;gap:3px}
+  .attach-item{width:48px;height:36px;font-size:6px}
 
-  /* AI panel */
-  .ai{width:100%;flex:none;border-left:none;border-top:1px solid var(--pn-grey-light)}
-  .ai-header{padding:8px 12px;font-size:12px}
-  .chat{overflow:visible;padding:8px;gap:6px;min-height:60px}
+  /* AI panel — prioritized on mobile */
+  .ai{width:100%;flex:none;border-left:none;border-top:2px solid var(--pn-blue)}
+  .ai-header{padding:6px 10px;font-size:11px;background:var(--pn-blue-pale)}
+  .chat{overflow:visible;padding:8px;gap:6px;min-height:80px}
   .bubble{font-size:10.5px;line-height:1.55;max-width:98%;padding:8px 10px}
   .bubble.ai{padding-left:28px}
   .bubble.ai::before{width:14px;height:14px;font-size:8px;left:6px;top:6px}
@@ -401,6 +413,8 @@ const chat=document.getElementById('chat'),crmPanel=document.getElementById('crm
 const CRM={
 cs:`<div class="crm-header"><div class="crm-icon">K</div><div class="crm-title">Kundeservice</div></div>
 <div class="crm-meta"><span>Opprettet <strong>2026-05-12 18:34</strong> via kundeweb</span><span>Kanal: <strong>E-post</strong></span><span>Bedrift: <strong>Helt Lovlig Import AS</strong></span></div>
+<div class="case-summary"><div class="cs-company">Helt Lovlig Import AS → Edith Melkerull</div><div class="cs-desc">Forsinket bursdagsgave + hjelp med pakkeautomat. Frustrert, men profesjonell tone.</div></div>
+<div class="collapsible"><div class="coll-header" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Vis henvendelsen</div><div class="coll-body">
 <div class="field" id="desc-field"><div class="field-label">Kundens henvendelse</div>
 <div class="field-val msg">Hei.
 
@@ -416,6 +430,8 @@ Mvh
 Helt Lovlig Import AS
 v/ Thomas Lindgren, kundeansvarlig
 thomas@heltlovlig.no · 922 44 556</div></div>
+</div></div>
+<div class="collapsible"><div class="coll-header" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Sakshistorikk (6)</div><div class="coll-body">
 <div class="field" id="timeline-field"><div class="field-label">Sakshistorikk</div>
 <div class="field-val timeline">
 <div class="tl-entry"><span class="tl-date">12. mai 18:34</span> — Sak opprettet av Helt Lovlig Import AS via kundeweb</div>
@@ -425,11 +441,14 @@ thomas@heltlovlig.no · 922 44 556</div></div>
 <div class="tl-entry"><span class="tl-date">13. mai 08:15</span> — Terminal Oslo svarte: Togavsporing årsak</div>
 <div class="tl-entry"><span class="tl-date">13. mai 08:30</span> — Lars: Oppdatert sak. Status: «Ikke ferdigbehandlet»</div>
 </div></div>
+</div></div>
 <div class="field"><div class="field-label">Sendingsinfo</div>
-<div class="field-val">Sendingsnr: <strong>707674206969</strong> · Mottaker: <strong>Edith Melkerull</strong> · Pakkeautomat: <strong>Rema 1000 Ski, Jernbaneveien 2</strong> · Hentefrist: <strong>15. mai kl. 23:59</strong></div></div>`,
+<div class="field-val">Sendingsnr: <strong>707674206969</strong> · Mottaker: <strong>Edith Melkerull</strong> · Pakkeautomat: <strong>Rema 1000 Ski</strong></div></div>`,
 
 claims:`<div class="crm-header"><div class="crm-icon">C</div><div class="crm-title">Claims</div></div>
 <div class="crm-meta"><span>Opprettet <strong>2026-01-22 08:30</strong> · Mottatt direkte fra kunde</span></div>
+<div class="case-summary"><div class="cs-company">Laserlaks AS — Reklamasjon</div><div class="cs-desc">94 kolli fersk sjømat skadet. Temperaturbrudd. Krav: min. 280 000 kr.</div></div>
+<div class="collapsible"><div class="coll-header" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Vis henvendelsen</div><div class="coll-body">
 <div class="field" id="desc-field"><div class="field-label">Reklamasjonshenvendelse</div>
 <div class="field-val msg">Til PostNord Claims,
 
@@ -441,6 +460,8 @@ Vi ber om en vurdering iht. NSAB 2015.
 
 Mvh
 Laserlaks AS</div></div>
+</div></div>
+<div class="collapsible"><div class="coll-header" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Sakshistorikk (4)</div><div class="coll-body">
 <div class="field" id="timeline-field"><div class="field-label">Sakshistorikk</div>
 <div class="field-val timeline">
 <div class="tl-entry"><span class="tl-date">22. jan 08:30</span> — Sak opprettet av Laserlaks AS via e-post</div>
@@ -448,8 +469,11 @@ Laserlaks AS</div></div>
 <div class="tl-entry"><span class="tl-date">22. jan 09:15</span> — Hilde: Kontaktet terminal Oslo for intern rapport</div>
 <div class="tl-entry"><span class="tl-date">22. jan 10:30</span> — Hilde: Bilder, temperaturlogg og faktura mottatt. Status: «Under vurdering»</div>
 </div></div>
+</div></div>
+<div class="collapsible"><div class="coll-header" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">Vedlegg (4)</div><div class="coll-body">
 <div class="field" id="attach-field"><div class="field-label">Vedlegg</div>
-<div class="attach-row"><div class="attach-item"><span class="ico">📷</span>skade_1.jpg</div><div class="attach-item"><span class="ico">📷</span>skade_2.jpg</div><div class="attach-item"><span class="ico">📊</span>temp_logg.png</div><div class="attach-item"><span class="ico">📄</span>faktura.pdf</div></div></div>`
+<div class="attach-row"><div class="attach-item"><span class="ico">📷</span>skade_1.jpg</div><div class="attach-item"><span class="ico">📷</span>skade_2.jpg</div><div class="attach-item"><span class="ico">📊</span>temp_logg.png</div><div class="attach-item"><span class="ico">📄</span>faktura.pdf</div></div></div>
+</div></div>`
 };
 
 const TRACKS={
@@ -459,51 +483,41 @@ cs:[
    tip:'📌 Eksemplene i denne opplæringen er fiktive og viser potensialet i AI-assistenten. Vi trenger dine innspill for å gjøre løsningen enda bedre — mer om det på slutten!\n\n🔒 Personvern: Data du skriver inn behandles i henhold til PostNord Norges retningslinjer. AI-assistenten deler ikke informasjon mellom ulike saker eller brukere.'},
   {sec:'Introduksjon',pp:null,spot:'#crm-panel',msgs:[],
    txt:'Les henvendelsen. Helt Lovlig Import AS skriver på vegne av sin kunde Edith Melkerull — pakken var forsinket til en bursdag, og Edith klarer ikke hente den fra pakkeautomaten.'},
-  {sec:'1 · Oppsummer post',pp:1,spot:'#pp-bar',msgs:[{t:'system',m:'🔍 Oppsummer kundens henvendelse.'}],
-   txt:'Trykk 🔍 Oppsummer post — AI-assistenten leser hele henvendelsen og gir et strukturert sammendrag.'},
   {sec:'1 · Oppsummer post',pp:1,spot:'#ai-panel',msgs:[
+    {t:'system',m:'🔍 Oppsummer kundens henvendelse.'},
     {t:'ai',m:'Sammendrag:\n\n• Avsender: Helt Lovlig Import AS v/ Thomas Lindgren\n• Sluttkunde: Edith Melkerull — omtalt som «veldig god kunde»\n• Problem 1: Pakke flere dager forsinket — bursdagsgave. Sporing oppdaterte seg knapt.\n• Problem 2: Pakken er i pakkeautomat (Rema 1000 Ski), men Edith klarer ikke åpne den.\n• Forsinkelsesårsak: Togavsporing mellom Narvik og Moss.\n• Ønske: Konkret henteveiledning for Edith.\n• Tone: Frustrert, men profesjonell.\n• Sendingsnr: 707674206969\n• Hentefrist: 15. mai kl. 23:59'}],
-   txt:'Full oversikt på sekunder — begge problemene identifisert, årsak, tone og hentefrist.',
+   txt:'Trykk 🔍 Oppsummer post — AI-assistenten leser henvendelsen og gir et strukturert sammendrag på sekunder.',
    tip:'💡 Visste du? Du kan redigere AI-svaret før du sender det videre. Bruk det som et utgangspunkt!'},
-  {sec:'2 · Gi svarforslag',pp:2,spot:'#pp-bar',msgs:[{t:'system',m:'💬 Gi et forslag til svar.'}],
-   txt:'Trykk 💬 Gi svarforslag — AI-assistenten skriver et empatisk svar til Thomas.'},
   {sec:'2 · Gi svarforslag',pp:2,spot:'#ai-panel',msgs:[
+    {t:'system',m:'💬 Gi et forslag til svar.'},
     {t:'ai',m:'Hei Thomas,\n\nTakk for at du tar kontakt på vegne av Edith Melkerull. Vi beklager virkelig at opplevelsen har vært så frustrerende — spesielt når pakken var en bursdagsgave. Forsinkelsen skyldtes dessverre at et tog sporet av mellom Narvik og Moss.\n\nVi forstår at manglende sporingsoppdateringer gjør det ekstra vanskelig, og vi ser på muligheten for å forbedre dette i fremtiden.\n\nFor at Edith skal hente pakken fra automaten på Rema 1000 Ski:\n\n1. Last ned appen PostNord Norge\n2. Gi appen tilgangene den trenger, som bluetooth og posisjon\n3. Oppsøk pakkeautomaten, åpne appen og velg pakken hun skal hente ut\n4. Luken med pakken åpner seg automatisk. Ta ut pakken og lukk luken\n\nVi har nå utsatt hentefristen til 4. august 2035, så Edith har god tid.\n\nVennlig hilsen,\n[Ditt navn]\nPostNord Kundeservice'}],
-   txt:'Ferdig svar — men husk å alltid dobbeltsjekke før du sender!'},
-  // Omformuler
-  {sec:'2b · Omformuler',pp:null,spot:'#ai-panel',msgs:[{t:'user',m:'Kan du gjøre svaret kortere og mer direkte?'}],
-   txt:'Du kan be AI-assistenten omformulere, forkorte eller endre tone — bare skriv i fritekstfeltet.'},
+   txt:'Trykk 💬 Gi svarforslag — ferdig svar til Thomas. Husk å alltid dobbeltsjekke før du sender!'},
   {sec:'2b · Omformuler',pp:null,spot:'#ai-panel',msgs:[
+    {t:'user',m:'Kan du gjøre svaret kortere og mer direkte?'},
     {t:'ai',m:'Hei Thomas,\n\nVi beklager forsinkelsen — den skyldtes en togavsporing. Hentefristen er utsatt til 4. august 2035.\n\nFor at Edith skal hente pakken:\n1. Last ned appen PostNord Norge\n2. Aktiver bluetooth og posisjon\n3. Åpne appen ved automaten på Rema 1000 Ski og velg pakken\n4. Luken åpner seg automatisk\n\nTa kontakt om dere trenger mer hjelp.\n\nMvh [Ditt navn], PostNord Kundeservice'}],
-   txt:'Samme innhold, men kortere og mer direkte. AI-assistenten tilpasser seg slik du ønsker.',
+   txt:'Du kan be AI-assistenten omformulere, forkorte eller endre tone — bare skriv i fritekstfeltet.',
    tip:'💡 Visste du? Du kan også be AI-assistenten endre tone til mer formell, uformell, eller tilpasset en bestemt mottaker.'},
-  {sec:'3 · Oppsummer behandling',pp:3,spot:'#pp-bar',msgs:[{t:'system',m:'📋 Oppsummer behandlingen i saken.'}],
-   txt:'Trykk 📋 Oppsummer behandling — se hva kollegaer har gjort i saken.'},
   {sec:'3 · Oppsummer behandling',pp:3,spot:'#ai-panel',msgs:[
+    {t:'system',m:'📋 Oppsummer behandlingen i saken.'},
     {t:'ai',m:'Saksbehandling:\n\n• 12. mai 18:34 — Sak opprettet av Helt Lovlig Import AS via kundeweb. Tildelt kø «Kundeservice Bedrift».\n• 12. mai 19:10 — Tildelt agent: Lars Eriksen. Status: «Ny».\n• 12. mai 19:25 — Lars: Identifisert to problemer. Status: «I arbeid».\n• 12. mai 19:40 — Lars: Sendt intern oppgave til terminal Oslo.\n• 13. mai 08:15 — Terminal Oslo svarte: Togavsporing.\n• 13. mai 08:30 — Lars: Oppdatert sak. Status: «Ikke ferdigbehandlet».\n\nTildelt: Lars Eriksen\nKontaktperson: Thomas Lindgren, Helt Lovlig Import AS\nNeste steg: Sende svar til Thomas med henteveiledning for Edith.'}],
-   txt:'Komplett oversikt — perfekt ved vaktskifte.',
+   txt:'Trykk 📋 Oppsummer behandling — komplett oversikt over hva kollegaer har gjort. Perfekt ved vaktskifte.',
    tip:'💡 Visste du? AI-assistenten husker konteksten innenfor samme sak. Du kan stille oppfølgingsspørsmål uten å gjenta deg.'},
-  {sec:'4 · Analyser bilder',pp:4,spot:'#pp-bar',msgs:[{t:'system',m:'📷 Analyser bildene vedlagt saken.'}],
-   txt:'Trykk 📷 Analyser bilder — Thomas har videresendt et skjermbilde fra Edith.'},
   {sec:'4 · Analyser bilder',pp:4,spot:'#ai-panel',msgs:[
+    {t:'system',m:'📷 Analyser bildene vedlagt saken.'},
     {t:'ai',m:'📷 Analyse av vedlagt skjermbilde:\n\nBildet viser SMS-en Edith mottok fra PostNord med hentelenke og sendingsnr 707674206969.\n\nObservasjoner:\n• SMS-en fungerer normalt — lenken er klikkbar\n• Edith har trykket på lenken, men forstår ikke neste steg\n• Edith har ikke PostNord-appen installert\n\nAnbefaling: Be Thomas videreformidle at Edith bør laste ned PostNord Norge-appen. Appen bruker bluetooth til å åpne automaten direkte.'}],
-   txt:'AI-assistenten analyserer skjermbildet og finner problemet.'},
-  {sec:'5 · Oversettelse',pp:null,spot:'#ai-panel',msgs:[{t:'user',m:'Oversett svaret til engelsk.'}],
-   txt:'Fritekst: Oversettelse — du skriver fritt i chatfeltet.'},
+   txt:'Trykk 📷 Analyser bilder — AI-assistenten analyserer skjermbildet og finner problemet.'},
   {sec:'5 · Oversettelse',pp:null,spot:'#ai-panel',msgs:[
+    {t:'user',m:'Oversett svaret til engelsk.'},
     {t:'ai',m:'Hi Thomas,\n\nThank you for reaching out on behalf of Edith Melkerull. We apologize for the delay — it was caused by a train derailment. The pickup deadline has been extended to August 4, 2035.\n\nFor Edith to pick up the package at Rema 1000 Ski:\n1. Download the PostNord Norge app\n2. Enable bluetooth and location\n3. Open the app at the locker and select the package\n4. The compartment opens automatically\n\nBest regards,\n[Your name]\nPostNord Customer Service'}],
-   txt:'Profesjonell oversettelse som beholder innhold og tone.'},
-  {sec:'6 · Feilsøking',pp:null,spot:'#ai-panel',msgs:[{t:'user',m:'Thomas melder at Edith sier appen ikke finner automaten. Hva kan være feil?'}],
-   txt:'Fritekst: Feilsøking — spør AI-assistenten direkte.'},
+   txt:'Fritekst: Skriv «Oversett svaret til engelsk» — profesjonell oversettelse som beholder innhold og tone.'},
   {sec:'6 · Feilsøking',pp:null,spot:'#ai-panel',msgs:[
+    {t:'user',m:'Thomas melder at Edith sier appen ikke finner automaten. Hva kan være feil?'},
     {t:'ai',m:'Feilsøking — appen finner ikke pakkeautomaten:\n\n1. Bluetooth: Sjekk at bluetooth er aktivert.\n2. Posisjon/GPS: Sjekk Innstillinger → PostNord → Posisjon.\n3. Avstand: Stå rett foran automaten (maks 2–3 meter).\n4. App-versjon: Oppdater til siste versjon.\n5. Restart: Lukk appen og skru bluetooth av/på.'}],
-   txt:'Konkret feilsøking du kan videreformidle til Thomas.'},
-  // AI-assistent begrensninger
-  {sec:'7 · AI-assistentens begrensninger',pp:null,spot:'#ai-panel',msgs:[{t:'user',m:'Hva er adressen til Edith Melkerull?'}],
-   txt:'Hva skjer når AI-assistenten ikke har svaret? La oss se.'},
+   txt:'Fritekst: Spør AI-assistenten direkte — konkret feilsøking du kan videreformidle til Thomas.'},
   {sec:'7 · AI-assistentens begrensninger',pp:null,spot:'#ai-panel',msgs:[
+    {t:'user',m:'Hva er adressen til Edith Melkerull?'},
     {t:'ai',m:'Beklager, men jeg har ikke tilgang til personopplysninger som privatadresser. Denne informasjonen finnes ikke i min kunnskapsdatabase.\n\nForslag:\n• Sjekk sendingsdetaljene i sporingssystemet\n• Kontakt Thomas Lindgren hos Helt Lovlig Import AS for mottakeradresse\n• Se eventuelt i ordresystemet knyttet til sendingsnr 707674206969'}],
-   txt:'AI-assistenten er ærlig når hun ikke vet svaret — og foreslår alternative veier. Dette er viktig å vite slik at du stoler på svarene den gir.',
+   txt:'Hva skjer når AI-assistenten ikke har svaret? Den er ærlig og foreslår alternative veier. Viktig å vite slik at du stoler på svarene den gir.',
    tip:'💡 Visste du? Når AI-assistenten svarer «jeg vet ikke», betyr det at informasjonen ikke finnes i kunnskapsbasen. Send gjerne forslag til hva som bør legges til via ksutvikling.no@postnord.com.'},
   {sec:'Oppsummering',pp:null,spot:null,msgs:[],
    txt:'Det var Kundeservice-modulen! Du lærte: oppsummering, svarforslag, omformulering, behandlingsoversikt, bildeanalyse, oversettelse, feilsøking — og at AI-assistenten er ærlig om sine begrensninger.'}
@@ -515,43 +529,35 @@ claims:[
    tip:'📌 Eksemplene i denne opplæringen er fiktive og viser potensialet i AI-assistenten. Vi trenger dine innspill for å gjøre løsningen enda bedre — mer om det på slutten!\n\n🔒 Personvern: Data du skriver inn behandles i henhold til PostNord Norges retningslinjer. AI-assistenten deler ikke informasjon mellom ulike saker eller brukere.'},
   {sec:'Introduksjon',pp:null,spot:'#crm-panel',msgs:[],
    txt:'Velkommen, Claims! Her ser du en reklamasjonssak fra Laserlaks AS — 94 kolli skadet gods, temperaturlogger og faktura vedlagt.'},
-  {sec:'1 · Oppsummer post',pp:1,spot:'#pp-bar',msgs:[{t:'system',m:'🔍 Oppsummer henvendelsen.'}],
-   txt:'Trykk 🔍 Oppsummer post — AI-assistenten oppsummerer reklamasjonen.'},
   {sec:'1 · Oppsummer post',pp:1,spot:'#ai-panel',msgs:[
+    {t:'system',m:'🔍 Oppsummer henvendelsen.'},
     {t:'ai',m:'Sammendrag:\n\n• Avsender: Laserlaks AS (direkte henvendelse)\n• Hendelse: 94 kolli fersk sjømat stod 29 timer på terminal Oslo (uke 42)\n• Dokumentasjon: Temperaturlogger, bilder av skadet gods, faktura vedlagt\n• Krav: Min. 280 000 kr — varetap, flytransport, omdømme\n• Regelverk: NSAB 2015-vurdering påkrevd\n• Tone: Formell — kunden forventer kompensasjonsvurdering'}],
-   txt:'Full oversikt — krav, dokumentasjon og regelverk identifisert.'},
-  {sec:'2 · Gi svarforslag',pp:2,spot:'#pp-bar',msgs:[{t:'system',m:'💬 Gi et forslag til svar.'}],
-   txt:'Trykk 💬 Gi svarforslag — profesjonelt Claims-svar.'},
+   txt:'Trykk 🔍 Oppsummer post — full oversikt over krav, dokumentasjon og regelverk.'},
   {sec:'2 · Gi svarforslag',pp:2,spot:'#ai-panel',msgs:[
+    {t:'system',m:'💬 Gi et forslag til svar.'},
     {t:'ai',m:'Til Laserlaks AS,\n\nVi bekrefter mottak av reklamasjonen vedrørende 94 kolli forsinket på terminal Oslo i uke 42.\n\nMottatt dokumentasjon:\n• Bilder av skadet gods\n• Temperaturlogg\n• Faktura LL-2026-8834\n\nSaken behandles iht. NSAB 2015. Vi gjennomfører en fullstendig vurdering og kommer tilbake med en detaljert beregning.\n\nMed vennlig hilsen,\n[Ditt navn]\nPostNord Claims'}],
-   txt:'Formelt svar som bekrefter dokumentasjon.'},
-  {sec:'3 · Oppsummer behandling',pp:3,spot:'#pp-bar',msgs:[{t:'system',m:'📋 Oppsummer behandlingen.'}],
-   txt:'Trykk 📋 Oppsummer behandling — se hele saksgangen.'},
+   txt:'Trykk 💬 Gi svarforslag — formelt svar som bekrefter mottatt dokumentasjon.'},
   {sec:'3 · Oppsummer behandling',pp:3,spot:'#ai-panel',msgs:[
+    {t:'system',m:'📋 Oppsummer behandlingen.'},
     {t:'ai',m:'Saksbehandling:\n\n• 22. jan 08:30 — Sak opprettet av Laserlaks AS via e-post. Tildelt kø «Claims».\n• 22. jan 09:00 — Tildelt agent: Hilde Strand. Status: «Ny».\n• 22. jan 09:15 — Hilde: Kontaktet terminal Oslo. Status: «I arbeid».\n• 22. jan 10:30 — Hilde: Dokumentasjon mottatt og vedlagt. Status: «Under vurdering».\n\nTildelt: Hilde Strand (Claims)\nNeste steg: Vurdere erstatning iht. NSAB 2015. Krav over kr 100 000 — må eskaleres til leder.'}],
-   txt:'Oversikt med eskaleringsvarsel for store krav.'},
-  {sec:'4 · Analyser bilder',pp:4,spot:'#pp-bar',msgs:[{t:'system',m:'📷 Analyser bildene vedlagt saken.'}],
-   txt:'Trykk 📷 Analyser bilder — AI-assistenten undersøker skadet gods og temperaturlogg.'},
+   txt:'Trykk 📋 Oppsummer behandling — oversikt med eskaleringsvarsel for store krav.'},
   {sec:'4 · Analyser bilder',pp:4,spot:'#ai-panel',msgs:[
+    {t:'system',m:'📷 Analyser bildene vedlagt saken.'},
     {t:'ai',m:'📷 skade_1.jpg:\nEPS-kasser med kondens — temperaturbrudd. Fisk med misfarging.\n\n📷 skade_2.jpg:\nKjøleelementer tint, væske i bunnen.\n\n📊 temp_logg.png:\n2–4°C første 6t → 12°C etter 14t → 16°C etter 24t. Grense (4°C) overskredet etter ca. 8 timer.\n\nKonklusjon: Dokumentasjonen bekrefter temperaturbrudd. Støtter erstatningskrav.'}],
-   txt:'Komplett bildevurdering med konklusjon.'},
-  {sec:'5 · Håndter reklamasjon',pp:5,spot:'#pp-bar',msgs:[{t:'system',m:'⚖️ Håndter reklamasjonen basert på NSAB 2015.'}],
-   txt:'Trykk ⚖️ Håndter reklamasjon — juridisk vurdering og beregning.'},
+   txt:'Trykk 📷 Analyser bilder — komplett bildevurdering med konklusjon.'},
   {sec:'5 · Håndter reklamasjon',pp:5,spot:'#ai-panel',msgs:[
+    {t:'system',m:'⚖️ Håndter reklamasjonen basert på NSAB 2015.'},
     {t:'ai',m:'NSAB 2015-vurdering:\n\n⚖️ Regelverk:\n• § 16: Ansvar fra mottak til utlevering\n• § 21: Erstatningsgrense SDR 8,33/kg\n• § 27: Reklamasjon innen rimelig tid ✓\n\n💰 Beregning:\n• 1 128 kg × SDR 8,33 × kr 13,20 = ca. kr 123 940\n• Kundens krav: kr 280 000+ (overstiger grensen)\n\n⚠️ OBS: Beregnet erstatning overstiger kr 100 000. Må eskaleres til leder for godkjenning.\n\n✅ Anbefaling:\n1. Anerkjenn reklamasjonen\n2. Innhent vektdokumentasjon\n3. Beregn erstatning iht. § 21\n4. Eskaler til leder for godkjenning\n5. Informer kunden om NSAB-begrensningen\n6. Vurder kulanseerstatning'}],
-   txt:'Juridisk vurdering — saker over kr 100 000 må godkjennes av leder.',
+   txt:'Trykk ⚖️ Håndter reklamasjon — juridisk vurdering. Saker over kr 100 000 må godkjennes av leder.',
    tip:'💡 Visste du? Du kan be AI-assistenten formulere avslag eller delvise innvilgelser — bare spør i fritekstfeltet.'},
-  {sec:'6 · Analyser fil',pp:6,spot:'#pp-bar',msgs:[{t:'system',m:'📄 Analyser vedlagt fil (faktura.pdf).'}],
-   txt:'Trykk 📄 Analyser fil — AI-assistenten leser fakturaen.'},
   {sec:'6 · Analyser fil',pp:6,spot:'#ai-panel',msgs:[
+    {t:'system',m:'📄 Analyser vedlagt fil (faktura.pdf).'},
     {t:'ai',m:'📄 Fakturanr: LL-2026-8834\n\n📦 Varelinjer:\n• 40x Fersk laks (4 kg) — kr 14 240\n• 20x Reker (2 kg) — kr 7 800\n• 15x Frukt/bær — kr 13 350\n• 19x Meieriprodukter — kr 23 560\n\n💰 Totalt eks. mva: kr 58 950\n📦 Totalvekt: 1 128 kg · 94 kolli\n\n⚠️ Beløp over kr 100 000 — husk eskalering til leder.'}],
-   txt:'Fakturainformasjon koblet til erstatningsberegningen.'},
-  // Fritekst Claims-spesifikk
-  {sec:'7 · Fritekst',pp:null,spot:'#ai-panel',msgs:[{t:'user',m:'Skriv et internt notat til min leder med anbefaling om å innvilge erstatning på kr 58 950 basert på varekostnad.'}],
-   txt:'Fritekst: Du kan be AI-assistenten skrive hva som helst — her et internt notat til leder.'},
+   txt:'Trykk 📄 Analyser fil — fakturainformasjon koblet til erstatningsberegningen.'},
   {sec:'7 · Fritekst',pp:null,spot:'#ai-panel',msgs:[
+    {t:'user',m:'Skriv et internt notat til min leder med anbefaling om å innvilge erstatning på kr 58 950 basert på varekostnad.'},
     {t:'ai',m:'Internt notat — til godkjenning\n\nSak: Laserlaks AS — reklamasjon uke 42\nSaksbehandler: Hilde Strand\n\nAnbefaling: Innvilge erstatning på kr 58 950 basert på dokumentert varekostnad (faktura LL-2026-8834).\n\nBegrunnelse:\n• Temperaturbrudd dokumentert (logg viser brudd etter 8 timer)\n• Bilder bekrefter destruksjon av gods\n• NSAB 2015 § 21 gir maks ca. kr 123 940 — varekostnad er under denne grensen\n• Kundens totalkrav (kr 280 000+) overstiger NSAB-grensen — anbefaler å informere om begrensningen\n\nForeslått neste steg:\n1. Godkjenn erstatning kr 58 950\n2. Send formelt svar til Laserlaks AS\n3. Vurder kulanseerstatning for flytransportkostnader separat\n\nVennligst bekreft.'}],
-   txt:'AI-assistenten skriver interne notater, e-poster til leder, eller hva du trenger — bare spør.',
+   txt:'Fritekst: Be AI-assistenten skrive hva som helst — her et internt notat til leder med anbefaling.',
    tip:'💡 Visste du? Du kan bruke AI-assistenten til alt fra interne notater til kladd for kundesvar — den tilpasser seg konteksten.'},
   {sec:'Oppsummering',pp:null,spot:null,msgs:[],
    txt:'Det var Claims-modulen! Du lærte: oppsummering, svarforslag, behandlingsoversikt, bildeanalyse, NSAB-vurdering, filanalyse og fritekst-notater.'}
